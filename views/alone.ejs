@@ -1,0 +1,12 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+    <p><%= object.title %></p>
+    <p><%= object.description %></p>
+    <p><%= object.price %></p>
+    <p><%= object.location %></p>
+    <p><%= object.country %></p>
+    <form method="get" action="/listings/edit/<%= object._id %>" ><button >EDIT</button></form>
+    <form action="/listings" method="get">
+        <button>Back</button>
+    </form>
+</body>

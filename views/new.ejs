@@ -1,0 +1,25 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+    <form method="post" action="/listings">
+        <p>Title</p>
+        <textarea name="Data[title]"></textarea>
+        <br>
+
+        <p>Location</p>
+        <textarea name="Data[location]"></textarea>
+        <br>
+
+        <p>Country</p>
+        <textarea name="Data[country]"></textarea>
+        <br>
+
+        <p>description</p>
+        <textarea name="Data[description]"></textarea>
+        <br>
+
+        <p>price</p>
+        <input name="Data[price]" type="number">
+        <button>Submit</button>
+
+    </form>
+</body>

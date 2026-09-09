@@ -1,0 +1,27 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+    <form method="POST" action="/listings/editing?_method=PUT">
+        <!-- Hidden input field to pass the document ID -->
+        <input type="hidden" name="Data[id]" value="<%= data._id %>" />
+        <p>Title</p>
+        <textarea name="Data[title]"><%= data.title %></textarea>
+        <br>
+
+        <p>Location</p>
+        <textarea name="Data[loaction]"><%= data.location %></textarea>
+        <br>
+
+        <p>Country</p>
+        <textarea name="Data[country]"><%= data.country %></textarea>
+        <br>
+
+        <p>description</p>
+        <textarea name="Data[description]"><%= data.description %></textarea>
+        <br>
+
+        <p>price</p>
+        <textarea name="Data[price]"> <%= data.price %></textarea>
+        <button>Submit</button>
+
+    </form>
+</body>
