@@ -23,6 +23,8 @@ async function main()
 {
     await mongoose.connect("mongodb://127.0.0.1:27017/project1");
 }
+const WrapAsync = require("./utils/WrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -34,10 +36,10 @@ app.get("/", (req, res) => {
   res.send("Hi, I am root");
 });
 // Index : the main thing that lists everything
-app.get("/listings", async (req, res) => {
+app.get("/listings", WrapAsync(async (req, res) => {
   const allListings = await Listing.find({});
   res.render("index.ejs", { allListings });
-});
+}));
 //Creating new data route
 app.get("/listings/new",(req,res)=>{
     res.render("new.ejs");
@@ -45,26 +47,30 @@ app.get("/listings/new",(req,res)=>{
 
 
 //editing 
-app.get("/listings/edit/:id",async (req,res)=>{
+app.get("/listings/edit/:id", WrapAsync(async (req,res)=>{
     const {id} = req.params;
     const data = await Listing.findById(id);
     res.render("edit.ejs", {data});
-})
+}));
 //update
-app.put( "/listings/editing" , async (req,res)=>{
+app.put( "/listings/editing" , WrapAsync(async (req,res)=>{
     const {id}= req.body.Data;
     await Listing.findByIdAndUpdate(id, req.body.Data);
     res.redirect(`/listings/${id}`);
-});
+}));
 // Showing the individual thing
-app.get("/listings/:id", async (req,res)=>{
+app.get("/listings/:id", WrapAsync(async (req,res)=>{
     const {id} = req.params;
     const object = await Listing.findById(id);
     res.render("alone.ejs", {object})
-});
+}));
 
 //posting a new data
-app.post("/listings",async (req,res)=>{
+app.post("/listings",WrapAsync(async (req,res)=>{
+    if(!req.body.Data)
+    {
+        throw new ExpressError(400 , "Enter the data firstof all.");
+    }
     const {Data} = req.body;
     const news = new Listing(Data);
     await news.save().then(()=>{
@@ -72,6 +78,14 @@ app.post("/listings",async (req,res)=>{
     });
     res.redirect("/listings");
 
+}));
+ 
+app.all("/{*splat}", (req,res,next)=>{
+    next(new ExpressError(404, "Page Not Found"));
+});
+app.use((err ,req , res, next)=>{
+    let {statusCode = 500, message = "Something went Wrong da!!!"} = err;
+    res.status(statusCode).send(message);
 });
 
 

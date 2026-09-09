@@ -1,25 +1,43 @@
 <% layout("/layouts/boilerplate") %>
+
 <body>
-    <form method="post" action="/listings">
+    <form method="post" action="/listings" novalidate class="needs-validation">
+
         <p>Title</p>
-        <textarea name="Data[title]"></textarea>
+        <textarea name="Data[title]" class="form-control" required style="width: 300px"></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a title.
+        </div>
 
         <p>Location</p>
-        <textarea name="Data[location]"></textarea>
+        <textarea name="Data[location]" class="form-control" required style="width: 300px"></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a location.
+        </div>
 
         <p>Country</p>
-        <textarea name="Data[country]"></textarea>
+        <textarea name="Data[country]" class="form-control" required style="width: 300px"></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a country.
+        </div>
 
         <p>description</p>
-        <textarea name="Data[description]"></textarea>
+        <textarea name="Data[description]" class="form-control" required style="width: 300px"></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a description.
+        </div>
 
         <p>price</p>
-        <input name="Data[price]" type="number">
+        <input name="Data[price]" type="number" class="form-control" required style="width: 300px">
+        <div class="invalid-feedback">
+        Please choose a price.
+        </div>
         <button>Submit</button>
-
     </form>
+
+    <script src="/js/js.js"></script>
 </body>

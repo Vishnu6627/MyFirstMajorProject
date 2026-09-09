@@ -1,27 +1,42 @@
 <% layout("/layouts/boilerplate") %>
 <body>
-    <form method="POST" action="/listings/editing?_method=PUT">
+    <form method="POST" action="/listings/editing?_method=PUT" novalidate class="needs-validation">
         <!-- Hidden input field to pass the document ID -->
         <input type="hidden" name="Data[id]" value="<%= data._id %>" />
         <p>Title</p>
-        <textarea name="Data[title]"><%= data.title %></textarea>
+        <textarea name="Data[title]" required class="form-control"><%= data.title %></textarea>
         <br>
-
+        <div class="invalid-feedback">
+        Please choose a title.
+        </div>
         <p>Location</p>
-        <textarea name="Data[loaction]"><%= data.location %></textarea>
+        <textarea name="Data[location]" required class="form-control"><%= data.location %></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a location.
+        </div>
 
         <p>Country</p>
-        <textarea name="Data[country]"><%= data.country %></textarea>
+        <textarea name="Data[country]" required class="form-control"><%= data.country %></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a country.
+        </div>
 
         <p>description</p>
-        <textarea name="Data[description]"><%= data.description %></textarea>
+        <textarea name="Data[description]" required class="form-control"><%= data.description %></textarea>
         <br>
+        <div class="invalid-feedback">
+        Please choose a description.
+        </div>
 
         <p>price</p>
-        <textarea name="Data[price]"> <%= data.price %></textarea>
+        <input name="Data[price]" type="number" class="form-control" required value="<%= data.price %>">
+        <div class="invalid-feedback">
+        Please choose a price.
+        </div>
         <button>Submit</button>
 
     </form>
+    <script src="/js/js.js"></script>
 </body>
