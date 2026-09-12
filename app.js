@@ -12,6 +12,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const mongoose = require("mongoose");
 const Listing = require("./models/Listing.js");
+const {listingSchema} = require("./schema.js");
 main()
 .then(()=>{
     console.log("DB connected");
@@ -66,19 +67,27 @@ app.get("/listings/:id", WrapAsync(async (req,res)=>{
 }));
 
 //posting a new data
-app.post("/listings",WrapAsync(async (req,res)=>{
-    if(!req.body.Data)
-    {
-        throw new ExpressError(400 , "Enter the data firstof all.");
-    }
-    const {Data} = req.body;
-    const news = new Listing(Data);
-    await news.save().then(()=>{
-        console.log("saved");
-    });
-    res.redirect("/listings");
+app.post("/listings", WrapAsync(async (req, res) => {
 
+    let { error } = listingSchema.validate(req.body.Data);
+
+    if (error) {
+        throw new ExpressError(400, error.details[0].message);
+    }
+
+    const { Data } = req.body;
+
+    const news = new Listing(Data);
+    await news.save();
+
+    res.redirect("/listings");
 }));
+//delete
+app.delete("/listings/:id", async (req,res)=>{
+    const {id} = req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect("/listings");
+});
  
 app.all("/{*splat}", (req,res,next)=>{
     next(new ExpressError(404, "Page Not Found"));
