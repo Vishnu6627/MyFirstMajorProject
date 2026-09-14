@@ -34,106 +34,16 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const validateReview = (req, res, next)=>{
-    console.log("VALIDATE REVIEW REACHED");
-    let { error } = reviewSchema.validate(req.body);
-    console.log("VALIDATE REVIEW REACHED");
-    if(error)
-    {
-        console.log("there is error")
-        let errmsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errmsg);
-    }else{
-        next();
-    }
-};
+const listings = require("./routes/listing.js");
+
 
 app.get("/", (req, res) => {
   res.send("Hi, I am root");
 });
 // Index : the main thing that lists everything
-app.get("/listings", WrapAsync(async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("index.ejs", { allListings });
-}));
-//Creating new data route
-app.get("/listings/new",(req,res)=>{
-    res.render("new.ejs");
-});
 
+app.use("/listings", listings);
 
-//editing 
-app.get("/listings/edit/:id", WrapAsync(async (req,res)=>{
-    const {id} = req.params;
-    const data = await Listing.findById(id);
-    res.render("edit.ejs", {data});
-}));
-//update
-app.put( "/listings/editing" , WrapAsync(async (req,res)=>{
-    const {id}= req.body.Data;
-    await Listing.findByIdAndUpdate(id, req.body.Data);
-    res.redirect(`/listings/${id}`);
-}));
-// Showing the individual thing
-app.get("/listings/:id", WrapAsync(async (req,res)=>{
-    const {id} = req.params;
-    const object = await Listing.findById(id).populate("reviews");
-    res.render("alone.ejs", {object})
-}));
-
-//posting a new data
-app.post("/listings", WrapAsync(async (req, res) => {
-
-    let { error } = listingSchema.validate(req.body.Data);
-
-    if (error) {
-        throw new ExpressError(400, error.details[0].message);
-    }
-
-    const { Data } = req.body;
-
-    const news = new Listing(Data);
-    await news.save();
-
-    res.redirect("/listings");
-}));
-//delete
-app.delete("/listings/:id", async (req,res)=>{
-    const {id} = req.params;
-
-    console.log("DELETE ROUTE RUNNING");
-
-    await Listing.findByIdAndDelete(id);
-
-    res.redirect("/listings");
-});
-
-//reviews
-//post a new review
-app.post("/listings/:id/reviews", validateReview, WrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    console.log("it saved");
-    res.redirect(`/listings/${listing._id}`);
-}));
-//delte route
-app.delete(
-  "/listings/:id/reviews/:reviewId",
-  WrapAsync(async (req, res) => {
-    let { id, reviewId } = req.params;
-
-    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
-
-    res.redirect(`/listings/${id}`);
-  })
-);
- 
 app.all("/{*splat}", (req,res,next)=>{
     next(new ExpressError(404, "Page Not Found"));
 });
