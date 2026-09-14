@@ -100,7 +100,11 @@ app.post("/listings", WrapAsync(async (req, res) => {
 //delete
 app.delete("/listings/:id", async (req,res)=>{
     const {id} = req.params;
+
+    console.log("DELETE ROUTE RUNNING");
+
     await Listing.findByIdAndDelete(id);
+
     res.redirect("/listings");
 });
 
